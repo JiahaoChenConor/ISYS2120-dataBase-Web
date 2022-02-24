@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>RandomCompany's Media Server</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/pure.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/grid.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+        <script src="{{ url_for('static', filename='scripts/jquery.js') }}"></script>
+        <script type="application/javascript">
+
+            function getsearchtarget() {
+                //Get the select select list and store in a variable
+                var e = document.getElementById("searchtarget");
+
+                //Get the selected value of the select list
+                var formaction = e.options[e.selectedIndex].value;
+
+                //Update the form action
+                document.searchform.action = formaction;
+
+            }
+
+            function topSearchAutocomplete() {
+                //Get the select select list and store in a variable
+                let target = document.getElementById("searchtarget");
+
+                //Get the selected value of the select list
+                let formaction = target.options[target.selectedIndex].label;
+
+                // Turn off autocomplete for multivalue search
+                if (formaction === "Multiterm")
+                    return;
+
+                autocomplete("searchterm", "searchtermdatalist", formaction);
+            }
+
+            function autocomplete(inputId, dataListId, type) {
+                let dataList = document.getElementById(dataListId);
+                // remove text content to clear previous suggestions
+                dataList.textContent = "";
+
+                let input = document.getElementById(inputId);
+
+                if (input.value.length < 3)
+                    return;
+
+                let searchAction = "{{ url_for('autocomplete') }}";
+                let formObject = {};
+                formObject.type = type;
+                formObject.content = input.value;
+                let formJson = JSON.stringify(formObject);
+
+                let xhr = new XMLHttpRequest();
+                let jsonResult;
+                xhr.onreadystatechange = function () {
+                    if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                        let dataList = document.getElementById(dataListId);
+                        // remove text content to clear previous suggestions
+                        dataList.textContent = "";
+                        jsonResult = JSON.parse(xhr.responseText);
+                        console.log(jsonResult);
+                        let count = 0;
+                        jsonResult.results.forEach((obj) => {
+                            let option = document.createElement('option');
+                            if (count < 20) {
+                                option.value = obj["name"];
+                                dataList.appendChild(option);
+                                console.log(obj["name"]);
+                            }
+                            count++;
+                        });
+                    }
+                };
+                xhr.open("POST", searchAction, true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.send(formJson);
+            }
+
+            function movieAutocomplete() {
+                autocomplete('innerSearchTerm', 'innerSearchTermDataList', 'Movies');
+            }
+
+            function tvShowAutocomplete() {
+                autocomplete('innerSearchTerm', 'innerSearchTermDataList', 'TV Shows');
+            }
+            </script>
+    </head>
+    <body>
+        <div class="body-container">
+            <header class="page-header">
+                <div class="container">
+                    <div class="title">
+                        <a href="/"><span class="inner"></span></a>
+                    </div>
+                    <ul class="page-nav">
+                        <li><a href="{{ url_for('list_artists') }}">Artists</a></li>
+                        <li><a href="{{ url_for('list_songs') }}">Songs</a></li>
+                        <li><a href="{{ url_for('list_podcasts') }}">Podcasts</a></li>
+                        <li><a href="{{ url_for('list_albums') }}">Albums</a></li>
+                        <li><a href="{{ url_for('list_tvshows') }}">TV Shows</a></li>
+                        <li><a href="{{ url_for('list_movies') }}">Movies</a></li>
+                        {% if session.logged_in %}
+                            <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                            <li></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% if session.logged_in %}
+                    <div style="float:right">
+                        <form name="searchform" class="Search" method="POST" action="" onsubmit="getsearchtarget()" autocomplete="off">
+                            <input type="text" name="searchterm" id="searchterm" placeholder="Search Term" list="searchtermdatalist" oninput="topSearchAutocomplete()" autofocus required>
+                            <datalist id="searchtermdatalist">
+                            </datalist>
+                            <br/>
+                            <select id="searchtarget" name="searchtarget">
+                                <option value="{{ url_for('search_tvshows' ) }}" selected>TV Shows</option>
+                                <!-- TODO Query (9), uncomment the next line by removing the brace+hashtag to add this menu option -->
+                                <option value="{{ url_for('search_movies' ) }}">Movies</option>
+                                <option value="{{ url_for('search_multiterm' ) }}">Multiterm</option>
+                                {# <option value="{{ url_for('search_songs' ) }}">Songs</option> #}
+                                {# <option value="{{ url_for('search_artists' ) }}">Artists</option> #}
+                                {# <option value="{{ url_for('search_albums' ) }}">Albums</option> #}
+                                {# <option value="{{ url_for('search_podcasts' ) }}">Podcasts</option> #}
+                            </select>
+                            <button type="submit">Search</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </header>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% if page.bar == True %}
+                        <ul class="flashes" style="background-color: #0B0">
+                    {% else %}
+                        <ul class="flashes" style="background-color: #B00">
+                    {% endif %}
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}

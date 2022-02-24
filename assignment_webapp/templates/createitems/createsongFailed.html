@@ -1,0 +1,15 @@
+{% include 'top.html' %}
+
+<div class="content">
+    <div class="container details">
+
+        <h2 class="title"> Sorry, unable to create a song based on attributes given:( </h2> 
+        <h4 class="title"> Please make sure: </h4>
+        <h4 class="title"> 1. you don't leave anything blank </h4>
+        <h4 class="title"> 2. you set the song length to an integer </h4>
+        <a class="pure-button" href="{{ url_for('add_song')}}">go back</a>
+
+    </div>
+</div>
+
+{% include 'bottom.html'%}

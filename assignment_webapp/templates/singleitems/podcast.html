@@ -1,0 +1,121 @@
+{% include 'top.html' %}
+<div class="content">
+    <div class="container details">
+      {% if podcast | length > 0 %}
+            <h2 class="title"> Relevant Podcast Information (including meta data) </h2>
+            <br/>
+            <hr/>
+            <h3> Id </h3>
+            <div>
+                        {{podcast[0].podcast_id}}
+            </div>
+
+            <h3> Title </h3>
+            <div>
+                        {{podcast[0].podcast_title}}
+            </div>
+
+            <h3> URL </h3>
+            <div>
+                        {{podcast[0].podcast_uri}}
+            </div>
+
+            <h3> Last Updated </h3>
+            <div>
+                        {{podcast[0].podcast_last_updated}}
+            </div>
+
+
+            <h3> Artworks </h3>
+            {% for instance in podcast %}
+                {% if instance.md_type_name == 'artwork' %}
+                    <img src="{{instance.md_value}}" width="300" height="240" alt="image">
+                {% endif %}
+            {% endfor %}
+            <br/>
+
+            <h3> Descriptions </h3>
+            {% for instance in podcast %}
+                {% if instance.md_type_name == 'description' %}
+                    <div>
+                        {{instance.md_value}}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <br/>
+
+            <h3> Copyright </h3>
+            {% for instance in podcast %}
+                {% if instance.md_type_name == 'copyright holder' %}
+                    <div>
+                        {{instance.md_value}}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <br/>
+
+            <!-- TODO - Query 10
+            You will have to modify the approach below slightly to make each genre clickable
+            -->
+            <h3> Genres </h3>
+            <table class="styled">
+                <thead>
+                <tr>
+                    <td> Genre ID </td>
+                    <td> Genre Name </td>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for instance in podcast %}
+                        {% if instance.md_type_name == 'podcast genre' %}
+                            <tr class="clickable-tr" data-href="{{ url_for('single_genre', genre_id=instance.md_id)}}">
+                            <td style="text-align: center">{{ instance.md_id }}</td>
+                                <td>{{instance.md_value}}</td>
+
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <h2 class="title"> Invalid Podcast</h2>
+        {% endif %}
+        <!-- TODO Query (6)  
+        Display All Relevant Podcast Infromation including meta data
+        Display All Relevant Podcast Episodes for this Podcast
+        -->
+
+        <!-- TODO - Query (10)
+        You will have to modify the above approach slightly to make each genre clickable
+        -->
+                <!-- Podcast Episodes -->
+                <h3>Episodes for this Podcast</h3>
+                <table class="styled">
+                    <thead>
+                        <tr>
+                            <td>Podcast Episode Media ID</td>
+                            <td>Podcast Episode Title</td>
+                            <td>Podcast Episode URI</td>
+                            <td>Podcast Episode Published Date</td>
+                            <td>Podcast Episode Length</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Add a for loop to iterate over the episodes -->
+                         {% for instance in all_podcasteps %}
+                            <!-- Each row is a link to each individual podcastEpisode page -->
+                            <tr class="clickable-tr" data-href="{{ url_for('single_podcastep', media_id=instance.media_id)}}">
+                                <td>{{instance.media_id}}</td>
+                                <td>{{instance.podcast_episode_title}}</td>
+                                <td>{{instance.podcast_episode_uri}}</td>
+                                <td>{{instance.podcast_episode_published_date}}</td>
+                                <td>{{instance.podcast_episode_length}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+        
+                </table>
+        
+            </div>
+    </div>
+</div>
+{% include 'bottom.html'%}

@@ -1,0 +1,119 @@
+{% include 'top.html' %}
+<div class="content">
+    <div class="container details">
+        <!--  Example of a table with clickable rows:
+        <table class="styled">
+                    <thead>
+                        <tr>
+                            <td>Column 1 Heading - Usually an ID </td>
+                            <td>Column 2 Heading</td>
+                                      .
+                                      .
+                                      .
+                            <td>Column n Heading</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for instance in some_input_array %}
+                        <tr class="clickable-tr" data-href="{{ url_for('single_item_target', target_id=instance.single_item_target_id)}}">
+                            <td style="text-align: center">{{ instance.single_item_target_id }}</td>
+                            <td>{{instance.item_corresponding_to_column_2}}</td>
+                                      .
+                                      .
+                                      .
+                            <td>{{instance.item_corresponding_to_column_n}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+        -->
+        <!-- TODO Query (10) -->
+        <!-- First check should be a valid instance -->
+        {% if genre | length > 0 %}
+            <h2 class="title"> {{genre[0].md_type_name + " : " + genre[0].md_value}}</h2>
+            <hr/>
+        <!-- Second check should be what type of genre? -->
+            {% if songs is not none %}
+                <div>
+                    <h3> Songs </h3>
+                    <table class="styled">
+                        <thead>
+                            <tr>
+                                <td>Song ID </td>
+                                <td>Song Title</td>
+                                <td>Item type</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for instance in songs %}
+                            <tr class="clickable-tr" data-href="{{ url_for('single_song', song_id=instance.song_id)}}">
+                                <td style="text-align: center">{{ instance.song_id }}</td>
+                                <td>{{instance.song_title}}</td>
+                                <td>Song</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+            {% if filmtvshows is not none %}
+            <div>
+                <h3> Film and TV Shows Video Media </h3>
+                <table class="styled">
+                    <thead>
+                    <tr>
+                        <td>Video ID </td>
+                        <td>Video Title</td>
+                        <td>Item Type</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for instance in filmtvshows %}
+                        {% if instance.video_type == 'tvshow' %}
+                        <tr class="clickable-tr" data-href="{{ url_for('single_tvshow', tvshow_id=instance.video_id)}}">
+                            <td style="text-align: center">{{ instance.video_id }}</td>
+                            <td>{{instance.video_title}}</td>
+                            <td>TV Show</td>
+                        </tr>
+                        {% else %}
+                        <tr class="clickable-tr" data-href="{{ url_for('single_movie', movie_id=instance.video_id)}}">
+                            <td style="text-align: center">{{ instance.video_id }}</td>
+                            <td>{{instance.video_title}}</td>
+                            <td>Movie</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+        {% if podcasts is not none %}
+        <div>
+            <h3> Podcasts </h3>
+            <table class="styled">
+                <thead>
+                <tr>
+                    <td>Podcast ID </td>
+                    <td>Podcast Title</td>
+                    <td>Item Type</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for instance in podcasts %}
+                <tr class="clickable-tr" data-href="{{ url_for('single_podcast', podcast_id=instance.podcast_id)}}">
+                    <td style="text-align: center">{{ instance.podcast_id }}</td>
+                    <td>{{instance.podcast_title}}</td>
+                    <td>Podcast</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+        {% else %}
+            <h2 class="title"> Invalid Genre ID</h2>
+        {% endif %}
+    </div>
+</div>
+{% include 'bottom.html'%}

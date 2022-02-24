@@ -1,0 +1,158 @@
+{% include 'top.html' %}
+    <div class="content">
+        <h1 class="title">Multivalue Search</h1>
+
+        <form class="Search" method="POST" action="{{url_for('search_multiterm')}}" autocomplete="off">
+            <input type="text" name="searchterm" id="innerSearchTerm" placeholder="Type:Value"
+                   oninput="autocomplete('innerSearchTerm', 'innerSearchTermDataList', 'Multivalue')"
+                   list="innerSearchTermDataList"
+                   autofocus required>
+            <datalist id="innerSearchTermDataList">
+            </datalist>
+            <button class="flat" type="submit">Search</button>
+        </form>
+            {% if results | length > 0 %}
+                {% if search_item.type == "movie" %}
+                    <!-- All Movies -->
+                    <table class="styled">
+                        <thead>
+                            <tr>
+                                <td>Movie ID</td>
+                                <td>Movie Name</td>
+                                <td>Movie Release Year</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for instance in results %}
+                                <!-- Each row is a link to each individual tvshow page -->
+                                <tr class="clickable-tr" data-href="{{ url_for('single_movie', movie_id=instance.movie_id)}}">
+                                    <td style="text-align: center">{{ instance.movie_id }}</td>
+                                    <td>{{instance.movie_title}}</td>
+                                    <td>{{instance.release_year}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% elif search_item.type == "artist" %}
+                    <!-- All Artists -->
+                    <table class="styled"  id="funtable">
+                        <thead>
+                            <tr>
+                                <td>Artist ID</td>
+                                <td></a>Artist Name</td>
+                                <td>Artist Associated Metadata Count</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for instance in results %}
+                                <!-- Each row is a link to each individual artist page -->
+                                <tr class="clickable-tr" data-href="{{ url_for('single_artist', artist_id=instance.artist_id)}}">
+                                    <td style="text-align: center">{{ instance.artist_id }}</td>
+                                    <td>{{instance.artist_name}}</td>
+                                    <td>{{instance.count}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                {% elif search_item.type == "song" %}
+                    <!-- All All Songs -->
+                    <table class="styled">
+                        <thead>
+                            <tr>
+                                <td>Song ID</td>
+                                <td>Song Name</td>
+                                <td>Artists</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for instance in results %}
+                                <!-- Each row is a link to each individual song page -->
+                                <tr class="clickable-tr" data-href="{{ url_for('single_song', song_id=instance.song_id)}}">
+                                    <td style="text-align: center">{{ instance.song_id }}</td>
+                                    <td>{{instance.song_title}}</td>
+                                    <td>{{instance.artists}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                {% elif search_item.type == "podcast" %}
+                    <!-- All Podcasts -->
+                    <table class="styled">
+                        <thead>
+                            <tr>
+                                <td>Podcast ID</td>
+                                <td>Podcast Name</td>
+                                <td>Podcast URI</td>
+                                <td>Podcast Last Updated</td>
+                                <td>Podcast Episode Count</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for instance in results %}
+                                <!-- Each row is a link to each individual podcast page -->
+                                <tr class="clickable-tr" data-href="{{ url_for('single_podcast', podcast_id=instance.podcast_id)}}">
+                                    <td style="text-align: center">{{ instance.podcast_id }}</td>
+                                    <td>{{instance.podcast_title}}</td>
+                                    <td>{{instance.podcast_uri}}</td>
+                                    <td>{{instance.podcast_last_updated}}</td>
+                                    <td>{{instance.count}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                {% elif search_item.type == "album"%}
+                    <!-- All Albums -->
+                    <table class="styled">
+                        <thead>
+                            <tr>
+                                <td>Album ID</td>
+                                <td>Album Name</td>
+                                <td>Album Song Count</td>
+                                <td>Album Artists</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for instance in results %}
+                                <!-- Each row is a link to each individual album page -->
+                                <tr class="clickable-tr" data-href="{{ url_for('single_album', album_id=instance.album_id)}}">
+                                    <td style="text-align: center">{{ instance.album_id }}</td>
+                                    <td>{{instance.album_title}}</td>
+                                    <td>{{instance.count}}</td>
+                                    <td>{{instance.artists}}</td>
+
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                {% elif search_item.type == "tvshow" %}
+                    <!-- All TV Shows -->
+                    <table class="styled">
+                        <thead>
+                            <tr>
+                                <td>TV Show ID</td>
+                                <td>TV Show Name</td>
+                                <td>TV Show Episode Count</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for instance in results %}
+                                <!-- Each row is a link to each individual tvshow page -->
+                                <tr class="clickable-tr" data-href="{{ url_for('single_tvshow', tvshow_id=instance.tvshow_id)}}">
+                                    <td style="text-align: center">{{ instance.tvshow_id }}</td>
+                                    <td>{{instance.tvshow_title}}</td>
+                                    <td>{{instance.count}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                {% endif %}
+
+
+            {% endif %}
+    </div>
+{% include 'bottom.html'%}

@@ -1,0 +1,55 @@
+{% include 'top.html' %}
+<div class="content">
+    <div class="container details">
+        <!-- Check if We have a valid song -->
+        {% if song | length > 0 %}
+            <h2 class="title"> {{song[0].song_title}} by {{song[0].artists}}</h2>
+            <br/>
+            Song is {{song[0].length}} seconds long.
+            <hr/>
+            <h3> Artworks </h3>
+            {% for instance in songmetadata %}
+                {% if instance.md_type_name == 'artwork' %}
+                    <img src="{{instance.md_value}}" alt="image">
+                    <br/>© Spotify Public Domain 2019.
+                {% endif %}
+            {% endfor %}
+            <br/>
+            <h3> Descriptions </h3>
+            {% for instance in songmetadata %}
+                {% if instance.md_type_name == 'description' %}
+                    <div>
+                        {{instance.md_value}}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <br/>
+            <!-- TODO - Query 10
+            You will have to modify the approach below slightly to make each genre clickable
+            -->
+            <h3> Genres </h3>
+            <table class="styled">
+            <thead>
+            <tr>
+                <td> Genre ID </td>
+                <td> Genre Name </td>
+            </tr>
+            </thead>
+            <tbody>
+                {% for instance in songmetadata %}
+                    {% if instance.md_type_name == 'song genre' %}
+                    <tr class="clickable-tr" data-href="{{ url_for('single_genre', genre_id=instance.md_id)}}">
+                    <td>{{instance.md_id}}</td>
+                    <td>{{instance.md_value}}</td>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+            <br/>
+
+        {% else %}
+            <h2 class="title"> Invalid Song ID</h2>
+        {% endif %}
+    </div>
+</div>
+{% include 'bottom.html'%}
